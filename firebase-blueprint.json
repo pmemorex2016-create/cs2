@@ -1,0 +1,85 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "Registered user of the forum",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "username": { "type": "string" },
+        "email": { "type": "string" },
+        "avatarUrl": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin", "user"] },
+        "createdAt": { "type": "integer" }
+      },
+      "required": ["id", "username", "email", "role", "createdAt"]
+    },
+    "Category": {
+      "title": "Category",
+      "description": "Forum category/section",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "icon": { "type": "string" },
+        "order": { "type": "integer" }
+      },
+      "required": ["id", "title", "description", "order"]
+    },
+    "Topic": {
+      "title": "Topic",
+      "description": "Discussion thread",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "categoryId": { "type": "string" },
+        "authorId": { "type": "string" },
+        "authorName": { "type": "string" },
+        "title": { "type": "string" },
+        "createdAt": { "type": "integer" },
+        "updatedAt": { "type": "integer" },
+        "viewCount": { "type": "integer" },
+        "replyCount": { "type": "integer" },
+        "isPinned": { "type": "boolean" },
+        "isLocked": { "type": "boolean" }
+      },
+      "required": ["id", "categoryId", "authorId", "authorName", "title", "createdAt"]
+    },
+    "Post": {
+      "title": "Post",
+      "description": "Individual post within a topic",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "topicId": { "type": "string" },
+        "categoryId": { "type": "string" },
+        "authorId": { "type": "string" },
+        "authorName": { "type": "string" },
+        "authorAvatarUrl": { "type": "string" },
+        "content": { "type": "string" },
+        "createdAt": { "type": "integer" },
+        "updatedAt": { "type": "integer" }
+      },
+      "required": ["id", "topicId", "categoryId", "authorId", "authorName", "content", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profiles"
+    },
+    "/categories/{categoryId}": {
+      "schema": "Category",
+      "description": "Forum categories"
+    },
+    "/categories/{categoryId}/topics/{topicId}": {
+      "schema": "Topic",
+      "description": "Topics within a category"
+    },
+    "/categories/{categoryId}/topics/{topicId}/posts/{postId}": {
+      "schema": "Post",
+      "description": "Replies within a topic"
+    }
+  }
+}
