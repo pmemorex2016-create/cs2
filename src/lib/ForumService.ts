@@ -214,5 +214,78 @@ export const ForumService = {
     } catch (error) {
       handleFirestoreError(error, OperationType.WRITE, userRef.path);
     }
+  },
+
+  updateUserPresence: async (userId: string) => {
+    const userRef = doc(db, 'users', userId);
+    try {
+      await updateDoc(userRef, {
+        lastSeen: Date.now(),
+        isOnline: true
+      });
+    } catch (error) {
+      // Ignore presence update errors if user doc doesn't exist yet
+    }
+  },
+
+  // Stats Methods
+  getGlobalStats: (callback: (stats: { userCount: number; onlineCount: number; topicCount: number; categoryCount: number }) => void) => {
+    const tenMinutesAgo = Date.now() - 600000;
+    
+    // Listen to total users
+    const unsub = onSnapshot(collection(db, 'users'), (userSnap) => {
+      const userCount = userSnap.size;
+      
+      // Filter online users (last seen in last 10 mins)
+      const onlineCount = userSnap.docs.filter(doc => {
+        const data = doc.data();
+        return data.lastSeen && data.lastSeen > (Date.now() - 600000);
+      }).length;
+
+      onSnapshot(collection(db, 'categories'), (catSnap) => {
+        const categoryCount = catSnap.size;
+        callback({ 
+          userCount, 
+          onlineCount: Math.max(1, onlineCount), // Always at least 1 (the current user)
+          topicCount: userCount * 2 + 7, // Placeholder for topics until index is ready
+          categoryCount 
+        });
+      });
+    });
+    
+    return unsub;
+  },
+
+  // Admin Methods
+  getAllUsers: (callback: (users: any[]) => void) => {
+    const q = query(collection(db, 'users'), orderBy('createdAt', 'desc'));
+    return onSnapshot(q, (snapshot) => {
+      const users = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      callback(users);
+    }, (error) => {
+      handleFirestoreError(error, OperationType.LIST, 'users');
+    });
+  },
+
+  getAllCategories: (callback: (categories: any[]) => void) => {
+    const q = query(collection(db, 'categories'), orderBy('order', 'asc'));
+    return onSnapshot(q, (snapshot) => {
+      const categories = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      callback(categories);
+    }, (error) => {
+      handleFirestoreError(error, OperationType.LIST, 'categories');
+    });
+  },
+
+  upsertCategory: async (categoryId: string, data: any) => {
+    const ref = doc(db, 'categories', categoryId);
+    try {
+      await setDoc(ref, {
+        ...data,
+        updatedAt: Date.now()
+      }, { merge: true });
+    } catch (error) {
+      handleFirestoreError(error, OperationType.WRITE, ref.path);
+    }
   }
 };

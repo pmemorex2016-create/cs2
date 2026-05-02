@@ -5,13 +5,14 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { LogIn, LogOut, MessageSquare, User as UserIcon, Search, Menu, Bell, X } from 'lucide-react';
+import { LogIn, LogOut, MessageSquare, User as UserIcon, Search, Menu, Bell, X, Shield } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { cn } from '@/src/lib/utils';
 import { useAuth } from '@/src/lib/AuthContext';
 import { signInWithGoogle, logout } from '@/src/lib/firebase';
 import { ForumService } from '@/src/lib/ForumService';
 import { Notification } from '@/src/types';
+import { ThemeToggle } from '../ThemeToggle';
 
 export function Navbar() {
   const { user } = useAuth();
@@ -38,6 +39,7 @@ export function Navbar() {
   };
 
   const unreadCount = notifications.filter(n => !n.isRead).length;
+  const isAdmin = user?.email === 'ogcshop2020@gmail.com';
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-border-strong bg-surface-raised/95 backdrop-blur-md h-20 flex items-center shrink-0">
@@ -54,10 +56,17 @@ export function Navbar() {
             <Link to="/" className="text-brand hover:italic transition-all">Lobby</Link>
             <Link to="/members" className="hover:text-white transition-colors">Igrači</Link>
             <Link to="/activity" className="hover:text-white transition-colors">Aktivnost</Link>
+            {isAdmin && (
+              <Link to="/admin" className="text-orange-500 hover:text-orange-400 flex items-center gap-2">
+                <Shield className="h-4 w-4" />
+                Admin
+              </Link>
+            )}
           </div>
         </div>
 
         <div className="flex items-center gap-4 sm:gap-6">
+          <ThemeToggle />
           <form onSubmit={handleSearch} className="relative hidden md:block">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
             <input

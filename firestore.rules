@@ -16,7 +16,10 @@ service cloud.firestore {
     }
 
     function isAdmin() {
-      return isSignedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+      return isSignedIn() && (
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid)) ||
+        (request.auth.token.email == 'ogcshop2020@gmail.com' && request.auth.token.email_verified == true)
+      );
     }
 
     // Validation helpers
@@ -24,9 +27,10 @@ service cloud.firestore {
       return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
     }
 
-    // User profiles & Notifications
+    // User profiles
     match /users/{userId} {
-      allow read: if isSignedIn();
+      // Allow public read so stats and profiles work for guests
+      allow read: if true;
       allow write: if isOwner(userId);
 
       match /notifications/{notifId} {
@@ -43,7 +47,7 @@ service cloud.firestore {
     // Categories
     match /categories/{categoryId} {
       allow read: if true;
-      allow write: if isAdmin(); // System/Admin only
+      allow write: if isAdmin();
 
       // Topics within category
       match /topics/{topicId} {

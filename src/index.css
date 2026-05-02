@@ -5,24 +5,70 @@
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
   
-  --color-brand: #ebff00; /* CS2 Neon Yellow/Green */
-  --color-brand-muted: #c9a063; /* CS2 Gold/Antique */
-  --color-surface-base: #060608;
-  --color-surface-raised: #0d0d12;
-  --color-surface-hover: #16161e;
-  --color-border-subtle: rgba(235, 255, 0, 0.03);
-  --color-border-strong: rgba(255, 255, 255, 0.08);
+  --color-brand: var(--brand); 
+  --color-brand-muted: var(--brand-muted);
+  --color-surface-base: var(--surface-base);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-hover: var(--surface-hover);
+  --color-border-subtle: var(--border-subtle);
+  --color-border-strong: var(--border-strong);
+}
+
+:root {
+  /* Default: Neon / CS2 Style */
+  --brand: #ebff00;
+  --brand-muted: #c9a063;
+  --surface-base: #060608;
+  --surface-base-rgb: 6, 6, 8;
+  --surface-raised: #0d0d12;
+  --surface-hover: #16161e;
+  --border-subtle: rgba(235, 255, 0, 0.05);
+  --border-strong: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme='classic'] {
+  --brand: #de9b35; /* Classic CS Orange */
+  --brand-muted: #8b5cf6;
+  --surface-base: #121212;
+  --surface-base-rgb: 18, 18, 18;
+  --surface-raised: #1c1c1c;
+  --surface-hover: #262626;
+  --border-subtle: rgba(222, 155, 53, 0.05);
+  --border-strong: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme='ct'] {
+  --brand: #4fd1ff; /* CT Blue */
+  --brand-muted: #3b82f6;
+  --surface-base: #0a0e14;
+  --surface-base-rgb: 10, 14, 20;
+  --surface-raised: #141b24;
+  --surface-hover: #1c2633;
+  --border-subtle: rgba(79, 209, 255, 0.05);
+  --border-strong: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme='crimson'] {
+  --brand: #ff4747; /* Crimson / Blood */
+  --brand-muted: #991b1b;
+  --surface-base: #0f0a0a;
+  --surface-base-rgb: 15, 10, 10;
+  --surface-raised: #1a1212;
+  --surface-hover: #261b1b;
+  --border-subtle: rgba(255, 71, 71, 0.05);
+  --border-strong: rgba(255, 255, 255, 0.08);
 }
 
 @layer base {
   body {
     @apply bg-surface-base text-gray-200 antialiased;
     background-image: 
-      linear-gradient(to bottom, rgba(6, 6, 8, 0.95), rgba(6, 6, 8, 0.98)),
+      linear-gradient(to bottom, rgba(var(--surface-base-rgb, 6, 6, 8), 0.95), rgba(var(--surface-base-rgb, 6, 6, 8), 0.98)),
       url('https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80&w=2000');
     background-attachment: fixed;
     background-size: cover;
     background-position: center;
+    transition: background-color 0.3s ease;
   }
 }
 

@@ -181,7 +181,7 @@ export default function Category() {
 
               {!user ? (
                 <div className="p-16 text-center">
-                  <p className="text-gray-400 font-medium mb-8 italic">Prijavi se da bi učestvovao u NRG zajednici.</p>
+                  <p className="text-gray-400 font-medium mb-8 italic">Prijavi se da bi učestvovao u CS2.RS zajednici.</p>
                   <button 
                     onClick={() => signInWithGoogle()}
                     className="bg-brand px-10 py-4 font-black uppercase tracking-widest text-surface-base shadow-lg shadow-brand/20 active:scale-95 transition-all"
@@ -213,7 +213,7 @@ export default function Category() {
                     />
                   </div>
                   <div className="flex items-center justify-between pt-4 border-t border-border-strong">
-                    <p className="text-[9px] font-black text-gray-600 uppercase tracking-widest">NRG Community guidelines Apply</p>
+                    <p className="text-[9px] font-black text-gray-600 uppercase tracking-widest">CS2.RS Community guidelines Apply</p>
                     <button
                       disabled={isSubmitting}
                       className="flex items-center gap-3 bg-brand px-10 py-4 font-black uppercase tracking-widest text-surface-base shadow-lg shadow-brand/20 active:scale-95 disabled:opacity-50 transition-all"

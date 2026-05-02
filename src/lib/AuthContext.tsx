@@ -6,6 +6,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, onAuthStateChanged } from 'firebase/auth';
 import { auth } from './firebase';
+import { ForumService } from './ForumService';
 
 interface AuthContextType {
   user: User | null;
@@ -19,9 +20,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
+    const unsubscribe = onAuthStateChanged(auth, (authUser) => {
+      setUser(authUser);
       setLoading(false);
+
+      if (authUser) {
+        // Initial presence
+        ForumService.updateUserPresence(authUser.uid);
+        
+        // Periodic presence update (every 5 mins)
+        const interval = setInterval(() => {
+          ForumService.updateUserPresence(authUser.uid);
+        }, 300000);
+        
+        return () => clearInterval(interval);
+      }
     });
     return unsubscribe;
   }, []);
